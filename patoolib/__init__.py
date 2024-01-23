@@ -410,8 +410,7 @@ def find_archive_program(format, command, program=None, password=None):
         if program.startswith('py_'):
             # it's a Python module and therefore always supported
             return program
-        exe = util.find_program(program)
-        if exe:
+        if exe := util.find_program(program):
             if program == '7z' and format == 'rar' and not util.p7zip_supports_rar():
                 continue
             return exe
@@ -557,8 +556,7 @@ def _extract_archive(archive, verbosity=0, interactive=True, outdir=None,
             log.log_info(f"... creating output directory `{outdir}'.")
             os.makedirs(outdir)
     try:
-        cmdlist = get_archive_cmdlist(archive, compression, program, verbosity, interactive, outdir, password=password)
-        if cmdlist:
+        if cmdlist := get_archive_cmdlist(archive, compression, program, verbosity, interactive, outdir, password=password):
             # an empty command list means the get_archive_cmdlist() function
             # already handled the command (e.g. when it's a builtin Python
             # function)
@@ -591,8 +589,7 @@ def _create_archive(archive, filenames, verbosity=0, interactive=True,
     program = find_archive_program(format, 'create', program=program, password=password)
     check_program_compression(archive, 'create', program, compression)
     get_archive_cmdlist = get_archive_cmdlist_func(program, 'create', format)
-    cmdlist = get_archive_cmdlist(archive, compression, program, verbosity, interactive, filenames, password=password)
-    if cmdlist:
+    if cmdlist := get_archive_cmdlist(archive, compression, program, verbosity, interactive, filenames, password=password):
         # an empty command list means the get_archive_cmdlist() function
         # already handled the command (e.g. when it's a builtin Python
         # function)
@@ -611,8 +608,7 @@ def _handle_archive(archive, command, verbosity=0, interactive=True,
     check_program_compression(archive, command, program, compression)
     get_archive_cmdlist = get_archive_cmdlist_func(program, command, format)
     # prepare keyword arguments for command list
-    cmdlist = get_archive_cmdlist(archive, compression, program, verbosity, interactive, password=password)
-    if cmdlist:
+    if cmdlist := get_archive_cmdlist(archive, compression, program, verbosity, interactive, password=password):
         # an empty command list means the get_archive_cmdlist() function
         # already handled the command (e.g. when it's a builtin Python
         # function)
@@ -712,8 +708,7 @@ def _repack_archive(archive1, archive2, verbosity=0, interactive=True, password=
     tmpdir = fileutil.tmpdir()
     try:
         kwargs = dict(verbosity=verbosity, outdir=tmpdir, password=password)
-        same_format = (format1 == format2 and compression1 and compression2)
-        if same_format:
+        if same_format := (format1 == format2 and compression1 and compression2):
             # only decompress since the format is the same
             kwargs['format'] = compression1
         path = _extract_archive(archive1, **kwargs)
