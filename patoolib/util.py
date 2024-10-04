@@ -19,6 +19,7 @@ import sys
 import shutil
 import subprocess
 from .log import log_info
+from security import safe_command
 
 
 class PatoolError(Exception):
@@ -59,8 +60,7 @@ class memoized:
 
 def backtick(cmd, encoding='utf-8'):
     """Return decoded output from command."""
-    return subprocess.run(
-        cmd, stdout=subprocess.PIPE, check=True, encoding=encoding, errors="replace"
+    return safe_command.run(subprocess.run, cmd, stdout=subprocess.PIPE, check=True, encoding=encoding, errors="replace"
     ).stdout
 
 
@@ -97,7 +97,7 @@ def run(cmd, verbosity=0, **kwargs):
     if verbosity < 1:
         # hide command output on stdout
         kwargs['stdout'] = subprocess.DEVNULL
-    res = subprocess.run(cmd, **kwargs)
+    res = safe_command.run(subprocess.run, cmd, **kwargs)
     return res.returncode
 
 
