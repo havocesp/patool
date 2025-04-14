@@ -23,6 +23,7 @@ import shutil
 import subprocess
 from collections.abc import Sequence
 from .log import log_info
+from security import safe_command
 
 
 class PatoolError(Exception):
@@ -33,8 +34,7 @@ class PatoolError(Exception):
 
 def backtick(cmd: Sequence[str], encoding: str = 'utf-8') -> str:
     """Return decoded output from command."""
-    return subprocess.run(
-        cmd, stdout=subprocess.PIPE, check=True, encoding=encoding, errors="replace"
+    return safe_command.run(subprocess.run, cmd, stdout=subprocess.PIPE, check=True, encoding=encoding, errors="replace"
     ).stdout
 
 
@@ -76,7 +76,7 @@ def run(cmd: Sequence[str], verbosity: int = 0, **kwargs) -> int:
         if kwargs.get("shell"):
             # for shell calls the command must be a string
             cmd = " ".join(cmd)
-    res = subprocess.run(cmd, **kwargs)
+    res = safe_command.run(subprocess.run, cmd, **kwargs)
     return res.returncode
 
 
