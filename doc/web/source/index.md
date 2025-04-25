@@ -1,6 +1,8 @@
 Patool
 =======
 
+Patool is a portable archive file manager for the command line.
+
 Introduction
 -------------
 [![XKCD Tar comic](https://imgs.xkcd.com/comics/tar.png)](https://xkcd.com/1168/)
@@ -31,9 +33,9 @@ ZIP (.zip, .jar, .cbz), ZOO (.zoo) and ZSTANDARD (.zst) archive formats.
 It relies on helper applications to handle those archive formats
 (for example `xz` for XZ (.xz) archives).
 
-The  archive  formats  TAR, ZIP, BZIP2 and
-GZIP are supported natively and  do  not  require  helper
-applications to be installed.
+The archive formats BZIP2, GZIP, TAR, XZ and ZIP are  supported
+natively  and  do  not  require  helper  applications to be
+installed.
 
 Installation
 -------------

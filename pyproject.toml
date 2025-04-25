@@ -1,46 +1,50 @@
 [project]
 name = "patool"
-version = "3.0.4"
-requires-python = ">=3.10"
+version = "4.0.1"
+requires-python = ">=3.11"
 dependencies = []
 # these values are set by setup.py
 dynamic = ["scripts", "authors", "keywords", "classifiers", "urls", "license", "readme", "description"]
 
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
-# these modules are only needed for development
+requires = ["setuptools-reproducible"]
+build-backend = "setuptools_reproducible"
+
+# work around https://github.com/astral-sh/uv/issues/9513
+[tool.setuptools]
+license-files = []
 
 [project.optional-dependencies]
 # optional features
 argcompletion = [
-  'argcomplete==3.5.1',
+  'argcomplete==3.6.1',
 ]
 
+# these modules are only needed for development
 [tool.uv]
 dev-dependencies = [
   # for using setuptools.setup() in setup.py
-  "setuptools==75.3.0",
+  "setuptools==77.0.3",
 
   # for testing
-  "pytest==8.3.3",
+  "pytest==8.3.5",
   # plugin to run tests in parallel
   "pytest-xdist[psutil]==3.6.1",
   # plugin to run tests in random order
   "pytest-randomly==3.16.0",
 
   # for python code linting
-  "ruff==0.7.3",
+  "ruff==0.11.2",
 
   # for python type checking
   "pytype==2024.10.11",
 
   # for generating a Python .whl file
-  "wheel==0.45.0",
+  "wheel==0.45.1",
 
   # for generating the web page
-  "sphinx==8.1.3",
-  "myst-parser==4.0.0",
+  "sphinx==8.2.3",
+  "myst-parser==4.0.1",
 
   # for upgrading the version number
   "bump2version==1.0.1",
@@ -51,5 +55,5 @@ dev-dependencies = [
 
 [tool.patool]
 # pin versions of Python and uv for development
-python_version_dev = "3.12.7"
-uv_version_dev = "0.5.1"
+python_version_dev = "3.12.9"
+uv_version_dev = "0.6.9"

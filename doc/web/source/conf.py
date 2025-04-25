@@ -9,7 +9,7 @@ import sys
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "patool"
-version = "3.0.3"
+version = "4.0.0"
 author = "Bastian Kleineidam"
 copyright = '2024 ' + author
 
@@ -59,3 +59,5 @@ html_theme_options = {
     'show_powered_by': False,
     'show_relbars': False,
 }
+
+pygments_style = 'rrt'

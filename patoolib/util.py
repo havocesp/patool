@@ -16,6 +16,8 @@
 
 import functools
 import os
+import re
+import platform
 import sys
 import shutil
 import subprocess
@@ -64,6 +66,9 @@ def run(cmd: Sequence[str], verbosity: int = 0, **kwargs) -> int:
     if verbosity < 1:
         # hide command output on stdout
         kwargs['stdout'] = subprocess.DEVNULL
+    if verbosity < -1:
+        # hide command output on stdout
+        kwargs['stderr'] = subprocess.DEVNULL
     if kwargs:
         if verbosity > 0:
             info = ", ".join(f"{k}={shell_quote(str(v))}" for k, v in kwargs.items())
@@ -108,26 +113,36 @@ def shell_quote_nt(value: str) -> str:
     return value
 
 
-def p7zip_supports_rar() -> bool:
-    """Determine if the RAR codec is installed for 7z program."""
-    if os.name == 'nt':
-        # Assume RAR support is compiled into the binary.
-        return True
-    # the subdirectory and codec name
-    codecnames = ['p7zip/Codecs/Rar29.so', 'p7zip/Codecs/Rar.so']
-    # search canonical user library dirs
-    for libdir in (
-        '/usr/lib',
-        '/usr/local/lib',
-        '/usr/lib64',
-        '/usr/local/lib64',
-        '/usr/lib/i386-linux-gnu',
-        '/usr/lib/x86_64-linux-gnu',
-    ):
-        for codecname in codecnames:
-            fname = os.path.join(libdir, codecname)
-            if os.path.exists(fname):
-                return True
+def p7zip_supports_rar(program: str) -> bool:
+    """Determine if the RAR codec is installed for 7z program.
+    If installed, `7z i` will print something like
+    ...
+    Codecs:
+    1   D    40301 Rar1
+    1   D    40302 Rar2
+    1   D    40303 Rar3
+    1   D    40305 Rar5
+    ...
+    """
+    _7z = find_program(program)
+    if _7z:
+        formats = backtick([_7z, "i"])
+        return bool(re.search(r" Rar\d$", formats, re.MULTILINE))
+    return False
+
+
+def p7zip_supports_compress(program: str) -> bool:
+    """Determine if COMPRESS (.Z) archives are supported for 7z program.
+    If installed, `7z i` will print something like
+    ...
+    Formats:
+    0  ......................  Z        z taz (.tar)  1F 9D
+    ...
+    """
+    _7z = find_program(program)
+    if _7z:
+        formats = backtick([_7z, "i"])
+        return bool(re.search(r"Z\s+z\s+taz", formats, re.MULTILINE))
     return False
 
 
@@ -139,6 +154,11 @@ def system_search_path() -> str:
         path = append_to_path(path, get_nt_7z_dir())
         path = append_to_path(path, get_nt_mac_dir())
         path = append_to_path(path, get_nt_winrar_dir())
+    # Add peazip add-ons
+    peazip_dir = get_peazip_addon_dir()
+    if os.path.isdir(peazip_dir):
+        for subdir in os.listdir(peazip_dir):
+            path = append_to_path(path, os.path.join(peazip_dir, subdir))
     return path
 
 
@@ -199,6 +219,17 @@ def get_nt_mac_dir() -> str:
 def get_nt_winrar_dir() -> str:
     """Return WinRAR directory."""
     return os.path.join(get_nt_program_dir(), "WinRAR")
+
+
+def get_peazip_addon_dir() -> str:
+    """Get platform-dependen directory for PeaZip add-ons."""
+    if platform.system() == 'Windows':
+        return 'C:\\Program Files\\PeaZip\\res\\bin\\'
+    if platform.system() == 'Linux':
+        return '/usr/lib/peazip/res/bin/'
+    if platform.system() == 'Darwin':
+        return '/Applications/peazip.app/Content/MacOS/bin/'
+    return ''
 
 
 def strlist_with_or(alist: Sequence[str]) -> str:

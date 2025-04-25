@@ -110,7 +110,6 @@ ArchiveMimetypes: dict[str, str] = {
     'application/jar': 'zip',  # reported on older systems such as ubuntu 14.04
     'application/java-archive': 'zip',
     'application/vnd.android.package-archive': 'zip',
-    'application/rar': 'rar',
     'application/vnd.ms-cab-compressed': 'cab',
     'application/x-7z-compressed': '7z',
     'application/x-ace': 'ace',
@@ -127,7 +126,6 @@ ArchiveMimetypes: dict[str, str] = {
     'application/x-cpio': 'cpio',
     'application/x-debian-package': 'deb',
     'application/x-dms': 'dms',
-    'application/x-gzip': 'gzip',
     'application/x-iso9660-image': 'iso',
     'application/x-lz4': 'lz4',
     'application/x-lzop': 'lzop',
@@ -137,8 +135,6 @@ ArchiveMimetypes: dict[str, str] = {
     'application/x-lrzip': 'lrzip',
     'application/x-lzh': 'lzh',
     'application/x-ms-wim': 'wim',
-    'application/x-rar': 'rar',
-    'application/x-redhat-package-manager': 'rpm',
     'application/x-rpm': 'rpm',
     'application/x-rzip': 'rzip',
     'application/x-shar': 'shar',
@@ -148,6 +144,7 @@ ArchiveMimetypes: dict[str, str] = {
     'application/x-xz': 'xz',
     'application/x-zip-compressed': 'zip',
     'application/x-zoo': 'zoo',
+    'application/vnd.rar': 'rar',
     'application/zip': 'zip',
     'application/zpaq': 'zpaq',
     "application/zstd": "zstd",
@@ -613,8 +610,11 @@ def find_archive_program(
             return program
         exe = util.find_program(program)
         if exe:
-            if program == '7z' and format == 'rar' and not util.p7zip_supports_rar():
-                continue
+            if program in ('7z', '7zz', '7zzs', '7za'):
+                if format == 'rar' and not util.p7zip_supports_rar(program):
+                    continue
+                if format == 'compress' and not util.p7zip_supports_compress(program):
+                    continue
             if not check_program_compression(
                 command, program, exe, compression, verbosity=verbosity
             ):
@@ -720,7 +720,7 @@ def list_formats() -> None:
                             end=' ',
                         )
                 elif format == '7z':
-                    if util.p7zip_supports_rar():
+                    if util.p7zip_supports_rar(program):
                         print("(rar archives supported)", end=' ')
                     else:
                         print("(rar archives not supported)", end=' ')

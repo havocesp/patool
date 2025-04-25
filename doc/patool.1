@@ -13,7 +13,7 @@
 .\"
 .TH PATOOL "1" "October 2024" "patool"
 .SH NAME
-patool - portable archive file manager
+patool - portable archive file manager for the command line
 .SH SYNOPSIS
  \fBpatool\fP [\fIglobal-options\fP] (\fBlist\fP|\fBtest\fP|\fBextract\fP|\fBcreate\fP|\fBdiff\fP|\fBsearch\fP|\fBrepack\fP|\fBformats\fP|\fBversion\fP) [\fIcommand-options\fP] [\fIcommand-arguments\fP]...
 .SH DESCRIPTION
@@ -37,7 +37,7 @@ ZOO (.zoo), ZPAQ (.zpaq) and ZSTANDARD (.zst) archive formats.
 It relies on helper applications to handle those archive formats
 (for example \fBxz\fP for XZ (.xz) archives).
 .PP
-The archive formats TAR, ZIP, BZIP2 and GZIP
+The archive formats BZIP2, GZIP, TAR, XZ and ZIP
 are supported natively and do not require helper applications to be
 installed.
 .SH EXAMPLES
@@ -56,7 +56,9 @@ of helper applications. Can be given multiple times to increase
 the output even more.
 .TP
 \fB\-q\fP, \fB\-\-quiet\fP
-Work quietly, exept on commands \fBformats\fP and \fBversion\fP, which still print their output.
+Work quietly, exept on commands \fBformats\fP and \fBversion\fP,
+which still print their output. Conflicts with \fB\-\-verbose\fP.
+If given twice suppresses error output from archive commands.
 .TP
 \fB\-\-non\-interactive\fP
 Try to prevent any interactive user input (i.e. prompting for passwords

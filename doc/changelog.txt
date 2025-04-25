@@ -1,6 +1,32 @@
-3.0.4 (released xx.xx.xxxx)
+4.0.1 (released xx.xx.xxxx)
+  * Updated dev dependencies; support reproducible builds with setuptools_reproducible.
+
+4.0.0 (released 28.02.2025)
+  * Detect and use archive programs from Peazip installations.
+    Closes: GH bug #51
+  * Require Python >= 3.11
+
+3.1.3 (released 15.02.2025)
+  * Expand rar detection logic to all 7zip programs
+    Thanks Alfred Wingate for the patch!
+  * Detect if 7zip programs support COMPRESS (.Z) archives, since 7za 24.09 does not support it anymore.
+    This fixes test errors on newer Ubuntu systems.
+
+3.1.2 (released 14.02.2025)
+  * Add workaround for an error using uv publish.
+
+3.1.1 (released 14.02.2025)
+  * Improved RAR support detection for the 7-Zip archiver.
+    Closes: GH bug #175, #176
+  * Enable file(1) detection of ALZ archives, and improved handling of RAR detection for file 5.46.
+    Thanks Alfred Wingate for the patches!
+
+3.1.0 (released 19.11.2024)
   * Added support for UDF (.udf) archives with 7z.
-  Closes: GH bug #80
+    Closes: GH bug #80
+  * The options --quiet and --verbose are now mutually exclusive options.
+  * When --quiet is given twice, output on stderr from archive commands is 
+    suppressed. When using the API functions, set verbosity to -2.
 
 3.0.3 (released 04.11.2024)
   * Fix UnicodeDecode errors when logging, especially on windows systems.
