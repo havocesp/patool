@@ -1040,9 +1040,9 @@ def _search_archive(
         raise util.PatoolError(msg)
     tmpdir = fileutil.tmpdir()
     try:
-        path = _extract_archive(archive, outdir=tmpdir, verbosity=-1, password=password)
+        path = _extract_archive(archive, outdir=tmpdir, verbosity=-1, password=password)        
         return util.run_checked(
-            [grep, "-r", "-e", pattern, "."], ret_ok=(0, 1), verbosity=1, cwd=path
+            [grep, *shlex.split(pattern), '.'], ret_ok=(0, 1), verbosity=1, cwd=path
         )
     finally:
         fileutil.rmtree(tmpdir)
