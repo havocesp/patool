@@ -27,7 +27,7 @@ class ArchiveSearchTest(unittest.TestCase):
     @needs_program('tar')
     def test_search_tar(self):
         """Run cli function to search in TAR archive."""
-        pattern = "42"
+        pattern = "-R -P '[42]'"
         archive = os.path.join(datadir, "t.tar")
         self.search(pattern, archive)
 
@@ -35,7 +35,7 @@ class ArchiveSearchTest(unittest.TestCase):
     @needs_program('unzip')
     def test_search_zip(self):
         """Run cli function to search in ZIP archive."""
-        pattern = "42"
+        pattern = "--color=never -R -e 42"
         archive = os.path.join(datadir, "t.zip")
         self.search(pattern, archive)
 
